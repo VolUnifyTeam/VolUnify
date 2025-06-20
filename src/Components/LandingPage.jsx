@@ -8,6 +8,18 @@ const LandingPage = () => {
         {/* Hero Section */}
         
 
+
+
+
+
+        {/*Make the volunteer button appear in the top center of the landing page, make it */}
+
+
+
+
+
+
+
         {/* Action Buttons - Updated with white text and no link styling */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl mx-auto">
           {/* Sign Up Button */}
