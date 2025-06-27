@@ -3,6 +3,7 @@ import { UserAuth } from "../context/AuthContext";
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import OrgCreateTile from './OrgCreateTile';
+import LoadingSpinner from './LoadingSpinner';
 
 const Dashboard = () => {
   const [fetchError, setFetchError] = useState(null);
@@ -51,7 +52,7 @@ const Dashboard = () => {
   };
 
   if (loading) {
-    return <div className="bg-gray-100 mx-auto p-4">Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   return (

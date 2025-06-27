@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { UserAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from './LoadingSpinner';
+
 
 const OrgSettings = () => {
   const { session, signOut } = UserAuth();
@@ -11,7 +13,13 @@ const OrgSettings = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsPageLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSignOut = async (e) => {
     e.preventDefault();
@@ -25,7 +33,7 @@ const OrgSettings = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setIsLoading(true);
     setError(null);
     setSuccess(null);
 
@@ -63,29 +71,29 @@ const OrgSettings = () => {
       console.error('Error updating settings:', error);
       setError(error.message);
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
+
+  if (isPageLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow p-4 md:p-8">
-        {/* Settings Box */}
         <div className="max-w-md mx-auto bg-gray-800 rounded-lg p-6 mb-8">
-          {/* Centered Settings Heading */}
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-blue-400">Settings</h1>
             <p className="text-gray-400 mt-2">Manage your account details</p>
           </div>
 
-          {/* Success Message */}
           {success && (
             <div className="mb-4 p-3 bg-green-900 text-green-100 rounded">
               {success}
             </div>
           )}
 
-          {/* Error Message */}
           {error && (
             <div className="mb-4 p-3 bg-red-900 text-red-100 rounded">
               {error}
@@ -93,7 +101,6 @@ const OrgSettings = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email Field */}
             <div className="space-y-1">
               <label htmlFor="email" className="block text-sm font-medium text-blue-400">
                 Email Address*
@@ -108,7 +115,6 @@ const OrgSettings = () => {
               />
             </div>
 
-            {/* Password Field */}
             <div className="space-y-1">
               <label htmlFor="password" className="block text-sm font-medium text-blue-400">
                 New Password
@@ -123,7 +129,6 @@ const OrgSettings = () => {
               />
             </div>
 
-            {/* Confirm Password Field */}
             {password && (
               <div className="space-y-1">
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-blue-400">
@@ -143,16 +148,23 @@ const OrgSettings = () => {
             <div className="pt-4">
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-medium disabled:opacity-50"
+                disabled={isLoading}
+                className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-medium disabled:opacity-50 flex justify-center items-center"
               >
-                {isSubmitting ? 'Updating...' : 'Update Settings'}
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                  </>
+                ) : 'Update Settings'}
               </button>
             </div>
           </form>
         </div>
 
-        {/* Sign Out Button */}
         <div className="max-w-md mx-auto">
           <button
             onClick={handleSignOut}
@@ -164,7 +176,6 @@ const OrgSettings = () => {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="w-full py-6 bg-indigo-900 text-white mt-auto">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-2">VolUnify</h2>

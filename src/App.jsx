@@ -1,8 +1,14 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigation } from 'react-router-dom';
+import LoadingSpinner from './Components/LoadingSpinner';
 
 function App() {
+  const navigation = useNavigation();
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      {/* Show spinner during route transitions */}
+      {navigation.state === 'loading' && <LoadingSpinner />}
+      
       {/* Header Section */}
       <div className="bg-gray-100 pb-4 tracking-tight relative">
         <div className="text-center pt-6 drop-shadow-md tracking-tight">

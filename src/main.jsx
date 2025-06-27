@@ -8,6 +8,9 @@ import Modal from 'react-modal';
 
 Modal.setAppElement('#root');
 
+// Set the background color for the entire app
+document.body.className = "bg-gray-100";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthContextProvider>

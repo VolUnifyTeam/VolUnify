@@ -4,37 +4,48 @@ import { supabase } from '../supabaseClient';
 import Modal from 'react-modal';
 import OrgSearchTile from './OrgSearchTile';
 import OrgInfo from './OrgInfo';
+import { UserAuth } from '../context/AuthContext';
+import LoadingSpinner from './LoadingSpinner';
 
 Modal.setAppElement('#root');
 
 const OrgSearch = () => {
   const navigate = useNavigate();
+  const { session } = UserAuth();
   const [fetchError, setFetchError] = useState(null);
   const [activities, setActivities] = useState(null);
   const [filteredActivities, setFilteredActivities] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Main loading state
+  const [isFiltering, setIsFiltering] = useState(false); // Filter loading state
   
   // Filter states
   const [selectedState, setSelectedState] = useState('none');
   const [selectedCity, setSelectedCity] = useState('none');
   const [selectedType, setSelectedType] = useState('none');
+  const [selectedField, setSelectedField] = useState('none');
   const [availableCities, setAvailableCities] = useState([]);
 
   useEffect(() => {
     const fetchActivities = async () => {
-      const { data, error } = await supabase
-        .from('activities')
-        .select('*');
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('activities')
+          .select('*');
 
-      if (error) {
-        setFetchError("Could Not Retrieve Activity Error");
-        setActivities(null);
-      }
-      if (data) {
-        setActivities(data);
-        setFilteredActivities(data);
-        setFetchError(null);
+        if (error) {
+          setFetchError("Could not load activities");
+          setActivities(null);
+        } else {
+          setActivities(data);
+          setFilteredActivities(data);
+        }
+      } catch (err) {
+        setFetchError("Network error occurred");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -48,9 +59,9 @@ const OrgSearch = () => {
         activities
           .filter(activity => activity.alocstate === selectedState)
           .map(activity => activity.aloccity)
-      )].filter(city => city); // Filter out empty/null cities
+      )].filter(city => city);
       setAvailableCities(cities);
-      setSelectedCity('none'); // Reset city when state changes
+      setSelectedCity('none');
     } else {
       setAvailableCities([]);
       setSelectedCity('none');
@@ -60,6 +71,7 @@ const OrgSearch = () => {
   // Apply filters when any filter changes
   useEffect(() => {
     if (activities) {
+      setIsFiltering(true);
       let filtered = [...activities];
       
       if (selectedState !== 'none') {
@@ -74,9 +86,14 @@ const OrgSearch = () => {
         filtered = filtered.filter(activity => activity.atype === selectedType);
       }
       
+      if (selectedField !== 'none') {
+        filtered = filtered.filter(activity => activity.afield === selectedField);
+      }
+      
       setFilteredActivities(filtered);
+      setIsFiltering(false);
     }
-  }, [selectedState, selectedCity, selectedType, activities]);
+  }, [selectedState, selectedCity, selectedType, selectedField, activities]);
 
   const handleTileClick = (activity) => {
     setSelectedOrg(activity);
@@ -88,15 +105,15 @@ const OrgSearch = () => {
     setSelectedOrg(null);
   };
 
-  // Get unique states and types from activities, filtering out empty/null values
+  // Get unique states and types from activities
   const allStates = activities 
     ? [...new Set(activities.map(activity => activity.alocstate))]
-        .filter(state => state) // Remove empty/null states
+        .filter(state => state)
     : [];
     
   const allTypes = activities 
     ? [...new Set(activities.map(activity => activity.atype))]
-        .filter(type => type) // Remove empty/null types
+        .filter(type => type)
     : [];
 
   const modalRef = useRef(null);
@@ -125,23 +142,41 @@ const OrgSearch = () => {
     },
   };
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      <div className="flex-grow py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col min-h-screen bg-gray-100 relative">
+      {/* Return to Dashboard Button */}
+      {session && (
+        <button 
+          onClick={() => navigate('/Dashboard')}
+          className="absolute top-4 left-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-200 z-10 flex items-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+          Dashboard
+        </button>
+      )}
+
+      <div className="flex-grow pt-16 pb-12 px-4 sm:px-6 lg:px-8">
         <h1 className="text-center mx-auto max-w-md mb-8 text-blue-400">Browse Volunteer Opportunities!</h1>
 
         {/* Filter Dropdowns */}
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           {/* State Filter */}
           <div className="space-y-1">
             <label htmlFor="state-filter" className="text-blue-400 block text-sm font-medium">
-              Filter by State
+              Filter by County
             </label>
             <select
               id="state-filter"
               value={selectedState}
               onChange={(e) => setSelectedState(e.target.value)}
               className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 text-white"
+              disabled={isFiltering}
             >
               <option value="none">Any</option>
               {allStates.map(state => (
@@ -160,7 +195,7 @@ const OrgSearch = () => {
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
               className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 text-white"
-              disabled={selectedState === 'none'}
+              disabled={selectedState === 'none' || isFiltering}
             >
               <option value="none">All Cities</option>
               {availableCities.map(city => (
@@ -168,7 +203,7 @@ const OrgSearch = () => {
               ))}
             </select>
             {selectedState === 'none' && (
-              <p className="text-xs text-blue-400 mt-1">Select a state first</p>
+              <p className="text-xs text-blue-400 mt-1">Select a county first</p>
             )}
           </div>
 
@@ -182,6 +217,7 @@ const OrgSearch = () => {
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
               className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 text-white"
+              disabled={isFiltering}
             >
               <option value="none">All Types</option>
               {allTypes.map(type => (
@@ -189,12 +225,41 @@ const OrgSearch = () => {
               ))}
             </select>
           </div>
+
+          {/* Field Filter */}
+          <div className="space-y-1">
+            <label htmlFor="field-filter" className="block text-sm font-medium text-blue-400">
+              Filter by Field
+            </label>
+            <select
+              id="field-filter"
+              value={selectedField}
+              onChange={(e) => setSelectedField(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 text-white"
+              disabled={isFiltering}
+            >
+              <option value="none">All Fields</option>
+              <option value="Medical">Medical</option>
+              <option value="Tech">Tech</option>
+              <option value="Education">Education</option>
+              <option value="Social">Social</option>
+              <option value="Animal-Related">Animal-Related</option>
+              <option value="Environmental">Environmental</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
         </div>
 
         <div className="min-h-[60vh]">
-          {fetchError && (<p className="text-red-500">{fetchError}</p>)}
+          {fetchError && (
+            <p className="text-red-500 text-center py-4">{fetchError}</p>
+          )}
 
-          {filteredActivities && (
+          {isFiltering ? (
+            <div className="flex justify-center items-center h-40">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          ) : filteredActivities && filteredActivities.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
               {filteredActivities.map(activity => (
                 <OrgSearchTile 
@@ -204,16 +269,17 @@ const OrgSearch = () => {
                 />
               ))}
             </div>
-          )}
-
-          {filteredActivities && filteredActivities.length === 0 && (
+          ) : (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">No activities match your filters</p>
+              <p className="text-gray-400 text-lg">
+                {filteredActivities ? "No activities match your filters" : "No activities found"}
+              </p>
               <button
                 onClick={() => {
                   setSelectedState('none');
                   setSelectedCity('none');
                   setSelectedType('none');
+                  setSelectedField('none');
                 }}
                 className="mt-4 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 text-white"
               >
@@ -233,38 +299,13 @@ const OrgSearch = () => {
               ref={modalRef}
               className="bg-gray-800 rounded-lg p-6 w-auto transition-all duration-300"
             >
-              <div className="flex justify-between items-center mb-4 min-w-[300px]">
-                <h2 className="text-xl font-bold break-words max-w-[70%]">
-                  {selectedOrg?.aname} - {selectedOrg?.atype}
-                </h2>
-              </div>
-              
-              <div className="transition-all duration-300">
-                <OrgInfo org={selectedOrg} />
-              </div>
-              
-              <div className="mt-6 flex justify-between items-center gap-4">
-                <button
-                  onClick={closeModal}
-                  className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition-colors whitespace-nowrap text-white"
-                >
-                  Close
-                </button>
-
-                <button 
-                  onClick={() => window.open(selectedOrg?.alink, '_blank')}
-                  className="px-4 py-2 bg-green-600 rounded hover:bg-green-700 transition-colors whitespace-nowrap text-white"
-                  disabled={!selectedOrg?.alink}
-                >
-                  SIGN UP HERE
-                </button>
-              </div>
+              {selectedOrg && <OrgInfo activity={selectedOrg} onClose={closeModal} />}
             </div>
           </Modal>
         </div>
       </div>
 
-      {/* Footer - full width and at bottom */}
+      {/* Footer */}
       <footer className="w-full py-6 bg-indigo-900 text-white mt-auto">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-2">VolUnify</h2>

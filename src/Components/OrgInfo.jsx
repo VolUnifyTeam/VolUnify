@@ -39,6 +39,14 @@ const OrgInfo = ({ org }) => {
       </div>
 
       <div className="bg-gray-700 p-4 rounded-lg w-full min-w-0 break-words">
+        <h3 className="font-semibold mb-2">Activity Field:</h3>
+        <p className="whitespace-pre-line">
+          {org.afield || 'No description available.'}
+        </p>
+      </div>
+
+
+      <div className="bg-gray-700 p-4 rounded-lg w-full min-w-0 break-words">
         <h3 className="font-semibold mb-2">Requirements</h3>
         <p className="whitespace-pre-line">
           {org.areq || 'No requirements provided.'}

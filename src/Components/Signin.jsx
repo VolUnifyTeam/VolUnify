@@ -1,30 +1,45 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useNavigation } from 'react-router-dom';
 import { UserAuth } from '../context/AuthContext';
+import LoadingSpinner from './LoadingSpinner';
 
 const Signin = () => {
-    const [email,setEmail] = useState(" ");
-    const [password,setPassword] = useState(" ");
-    const [error,setError] = useState(null);
-    const [loading,setLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [isPageLoading, setIsPageLoading] = useState(true);
+    const navigation = useNavigation();
 
-    const {session, signInUser} = UserAuth();
+    const { signInUser } = UserAuth();
     const navigate = useNavigate();
 
-    const handleSignIn = async(e) => {
-        e.preventDefault()
-        setLoading(true)
-        try{
-            const result = await signInUser(email,password)
-            if(result.success){
-                navigate('/Dashboard')
+    useEffect(() => {
+        // Simulate page load (remove timeout in production)
+        const timer = setTimeout(() => setIsPageLoading(false), 800);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const handleSignIn = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        
+        try {
+            const result = await signInUser(email, password);
+            if (result.success) {
+                navigate('/Dashboard');
             }
         } catch (err) {
-            setError("Invalid email or password");
+            setError(err.message || "Invalid email or password");
         } finally {
             setLoading(false);
         }
     };
+
+    if (isPageLoading || navigation.state === 'loading') {
+        return <LoadingSpinner />;
+    }
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-100">
@@ -32,7 +47,10 @@ const Signin = () => {
                 <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-8">
                     <h2 className="text-center text-3xl font-bold text-white mb-2">Sign In</h2>
                     <p className="text-gray-400 mb-6">
-                        Need to Create an Account? <Link to='/signup' className="text-blue-400 hover:text-blue-300">Create One Here!</Link>
+                        Need an account?{' '}
+                        <Link to='/signup' className="text-blue-400 hover:text-blue-300 hover:underline">
+                            Create One Here!
+                        </Link>
                     </p>
 
                     <form onSubmit={handleSignIn} className="space-y-4">
@@ -41,11 +59,13 @@ const Signin = () => {
                                 Email Address
                             </label>
                             <input 
-                                onChange={(e) => setEmail(e.target.value)} 
-                                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                                onChange={(e) => setEmail(e.target.value)}
+                                value={email}
+                                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50" 
                                 type="email" 
                                 id="email"
                                 required
+                                disabled={loading}
                             />
                         </div>
 
@@ -54,32 +74,46 @@ const Signin = () => {
                                 Password
                             </label>
                             <input 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                                onChange={(e) => setPassword(e.target.value)}
+                                value={password}
+                                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50" 
                                 type="password" 
                                 id="password"
                                 required
+                                disabled={loading}
                             />
                         </div>
 
                         <button 
                             type="submit" 
                             disabled={loading}
-                            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded disabled:opacity-50"
+                            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded disabled:opacity-50 flex justify-center items-center"
                         >
-                            {loading ? 'Signing In...' : 'Sign In'}
+                            {loading ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Signing In...
+                                </>
+                            ) : 'Sign In'}
                         </button>
                         
-                        {error && <p className="text-red-400 text-center pt-4">{error}</p>}
+                        {error && (
+                            <p className="text-red-400 text-center pt-4">
+                                {error}
+                            </p>
+                        )}
                     </form>
                 </div>
             </div>
 
-           <footer className="py-6 bg-indigo-900 text-white">
+            <footer className="py-6 bg-indigo-900 text-white">
                 <div className="max-w-md mx-auto px-4 text-center">
                     <h2 className="text-2xl font-bold mb-2">VolUnify</h2>
                     <p className="text-indigo-200">
-                        Have any questions or need support? Contact us at:{" "}
+                        Need help? Contact us at:{' '}
                         <a 
                             href="mailto:volunifyteam@gmail.com" 
                             className="text-indigo-300 hover:text-white underline"

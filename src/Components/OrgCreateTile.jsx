@@ -28,7 +28,7 @@ const OrgCreateTile = ({ activity, currentUserId }) => {
       {/* Owner indicator badge */}
       <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
       
-      <h2 className="text-lg font-bold mb-2 ">Activity: {activity.aname}</h2>
+      <h2 className="text-lg font-bold mb-2 ">Organization: {activity.aname}</h2>
       <div className="border-t border-gray-600 pt-2 mb-4 flex-grow">
         <h3 className="font-semibold ">Activity Description</h3>
         <p className="mt-1 ">{activity.adesc}</p>

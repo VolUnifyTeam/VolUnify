@@ -5,16 +5,60 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 // List of all US states
 const US_STATES = [
-  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 
-  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 
-  'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 
-  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 
-  'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 
-  'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 
-  'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 
-  'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 
-  'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 
-  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  'Any County', 'Anderson', 'Andrews', 'Angelina', 'Aransas', 'Archer', 
+'Armstrong', 'Atascosa', 'Austin', 'Bailey', 'Bandera', 'Bastrop', 
+'Baylor', 'Bee', 'Bell', 'Bexar', 'Blanco', 'Borden', 'Bosque', 
+'Bowie', 'Brazoria', 'Brazos', 'Brewster', 'Briscoe', 'Brooks', 
+'Brown', 'Burleson', 'Burnet', 'Caldwell', 'Calhoun', 'Callahan', 
+'Cameron', 'Camp', 'Carson', 'Cass', 'Castro', 'Chambers', 
+'Cherokee', 'Childress', 'Clay', 'Cochran', 'Coke', 'Coleman', 
+'Collin', 'Collingsworth', 'Colorado', 'Comal', 'Comanche', 
+'Concho', 'Cooke', 'Coryell', 'Cottle', 'Crane', 'Crockett', 
+'Crosby', 'Culberson', 'Dallam', 'Dallas', 'Dawson', 'Deaf Smith', 
+'Delta', 'Denton', 'DeWitt', 'Dickens', 'Dimmit', 'Donley', 
+'Duval', 'Eastland', 'Ector', 'Edwards', 'Ellis', 'El Paso', 
+'Erath', 'Falls', 'Fannin', 'Fayette', 'Fisher', 'Floyd', 
+'Foard', 'Fort Bend', 'Franklin', 'Freestone', 'Frio', 'Gaines', 
+'Galveston', 'Garza', 'Gillespie', 'Glasscock', 'Goliad', 
+'Gonzales', 'Gray', 'Grayson', 'Gregg', 'Grimes', 'Guadalupe', 
+'Hale', 'Hall', 'Hamilton', 'Hansford', 'Hardeman', 'Hardin', 
+'Harris', 'Harrison', 'Hartley', 'Haskell', 'Hays', 'Hemphill', 
+'Henderson', 'Hidalgo', 'Hill', 'Hockley', 'Hood', 'Hopkins', 
+'Houston', 'Howard', 'Hudspeth', 'Hunt', 'Hutchinson', 'Irion', 
+'Jack', 'Jackson', 'Jasper', 'Jeff Davis', 'Jefferson', 'Jim Hogg', 
+'Jim Wells', 'Johnson', 'Jones', 'Karnes', 'Kaufman', 'Kendall', 
+'Kenedy', 'Kent', 'Kerr', 'Kimble', 'King', 'Kinney', 'Kleberg', 
+'Knox', 'Lamar', 'Lamb', 'Lampasas', 'La Salle', 'Lavaca', 'Lee', 
+'Leon', 'Liberty', 'Limestone', 'Lipscomb', 'Live Oak', 'Llano', 
+'Loving', 'Lubbock', 'Lynn', 'McCulloch', 'McLennan', 'McMullen', 
+'Madison', 'Marion', 'Martin', 'Mason', 'Matagorda', 'Maverick', 
+'Medina', 'Menard', 'Midland', 'Milam', 'Mills', 'Mitchell', 
+'Montague', 'Montgomery', 'Moore', 'Morris', 'Motley', 'Nacogdoches', 
+'Navarro', 'Newton', 'Nolan', 'Nueces', 'Ochiltree', 'Oldham', 
+'Orange', 'Palo Pinto', 'Panola', 'Parker', 'Parmer', 'Pecos', 
+'Polk', 'Potter', 'Presidio', 'Rains', 'Randall', 'Reagan', 
+'Real', 'Red River', 'Reeves', 'Refugio', 'Roberts', 'Robertson', 
+'Rockwall', 'Runnels', 'Rusk', 'Sabine', 'San Augustine', 
+'San Jacinto', 'San Patricio', 'San Saba', 'Schleicher', 
+'Scurry', 'Shackelford', 'Shelby', 'Sherman', 'Smith', 'Somervell', 
+'Starr', 'Stephens', 'Sterling', 'Stonewall', 'Sutton', 'Swisher', 
+'Tarrant', 'Taylor', 'Terrell', 'Terry', 'Throckmorton', 'Titus', 
+'Tom Green', 'Travis', 'Trinity', 'Tyler', 'Upshur', 'Upton', 
+'Uvalde', 'Val Verde', 'Van Zandt', 'Victoria', 'Walker', 
+'Waller', 'Ward', 'Washington', 'Webb', 'Wharton', 'Wheeler', 
+'Wichita', 'Wilbarger', 'Willacy', 'Williamson', 'Wilson', 
+'Winkler', 'Wise', 'Wood', 'Yoakum', 'Young', 'Zapata', 'Zavala'
+];
+
+// Activity field options
+const ACTIVITY_FIELDS = [
+  'Medical',
+  'Tech',
+  'Education', 
+  'Social',
+  'Animal-Related',
+  'Environmental',
+  'Other'
 ];
 
 const OrgEditPage = () => {
@@ -26,15 +70,17 @@ const OrgEditPage = () => {
   const [formError, setFormError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showDateRemoved, setShowDateRemoved] = useState(false);
 
   // Map of field IDs to their display names
   const fieldDisplayNames = {
     aname: 'Organization Name',
     alink: 'Activity Link',
     atype: 'Activity Type',
+    afield: 'Activity Field',
     alocstate: 'State',
     aloccity: 'City',
-    alocation: 'Specific Location',
+    alocation: 'Address',
     adate: 'Date',
     adesc: 'Description',
     areq: 'Requirements'
@@ -47,34 +93,38 @@ const OrgEditPage = () => {
       return;
     }
 
-    const fetchActivity = async () => {
-      try {
-        setLoading(true);
-        
-        const { data, error } = await supabase
-          .from('activities')
-          .select('*')
-          .eq('aid', activityId)
-          .single();
+   const fetchActivity = async () => {
+  try {
+    setLoading(true);
+    
+    const { data, error } = await supabase
+      .from('activities')
+      .select('*')
+      .eq('aid', activityId)
+      .single();
 
-        if (error) throw error;
-        if (!data) throw new Error('Activity not found in database');
+    if (error) throw error;
+    if (!data) throw new Error('Activity not found in database');
 
-        // Verify ownership
-        if (data.Org_Info !== session?.user?.id) {
-          throw new Error('You are not authorized to edit this activity');
-        }
+    // Verify ownership
+    if (data.Org_Info !== session?.user?.id) {
+      throw new Error('You are not authorized to edit this activity');
+    }
 
-        setFormData(data);
-        setFormError(null);
-      } catch (error) {
-        console.error('Error fetching activity:', error);
-        setFormError(error.message);
-        navigate('/dashboard', { state: { error: error.message } });
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Ensure adate is null if empty in database
+    setFormData({
+      ...data,
+      adate: data.adate || null
+    });
+    setFormError(null);
+  } catch (error) {
+    console.error('Error fetching activity:', error);
+    setFormError(error.message);
+    navigate('/dashboard', { state: { error: error.message } });
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchActivity();
   }, [activityId, session, navigate]);
@@ -87,47 +137,50 @@ const OrgEditPage = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData) return;
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!formData) return;
 
-    setIsSubmitting(true);
-    setFormError(null);
+  setIsSubmitting(true);
+  setFormError(null);
 
-    const requiredFields = ['aname', 'atype', 'aemail', 'adate', 'alocstate', 'aloccity', 'adesc'];
-    const missingFields = requiredFields.filter(field => !formData[field]);
+  const requiredFields = ['aname', 'atype', 'afield', 'aemail', 'alocstate', 'aloccity', 'adesc'];
+  const missingFields = requiredFields.filter(field => !formData[field]);
 
-    if (missingFields.length > 0) {
-      // Convert field IDs to display names for the error message
-      const missingFieldNames = missingFields.map(field => fieldDisplayNames[field] || field);
-      setFormError(`Please fill out these required fields: ${missingFieldNames.join(', ')}`);
-      setIsSubmitting(false);
-      
-      // Scroll to the error message
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-      return;
-    }
+  if (missingFields.length > 0) {
+    const missingFieldNames = missingFields.map(field => fieldDisplayNames[field] || field);
+    setFormError(`Please fill out these required fields: ${missingFieldNames.join(', ')}`);
+    setIsSubmitting(false);
+    
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    return;
+  }
 
-    try {
-      const { data, error } = await supabase
-        .from('activities')
-        .update(formData)
-        .eq('aid', activityId)
-        .select();
+  try {
+    const submissionData = {
+      ...formData,
+      adate: formData.adate || null // Ensure NULL is sent when no date
+    };
 
-      if (error) throw error;
-      
-      navigate('/dashboard', { state: { success: true } });
-    } catch (error) {
-      console.error('Error updating activity:', error);
-      setFormError(error.message || "Error submitting form. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    const { data, error } = await supabase
+      .from('activities')
+      .update(submissionData)
+      .eq('aid', activityId)
+      .select();
+
+    if (error) throw error;
+    
+    navigate('/dashboard', { state: { success: true } });
+  } catch (error) {
+    console.error('Error updating activity:', error);
+    setFormError(error.message || "Error submitting form. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   if (loading) {
     return (
@@ -202,7 +255,6 @@ const OrgEditPage = () => {
                 onChange={handleChange}
                 placeholder="https://example.com"
                 className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                required
               />
             </div>
 
@@ -227,10 +279,30 @@ const OrgEditPage = () => {
               </select>
             </div>
 
+            {/* Activity Field */}
+            <div className="space-y-1">
+              <label htmlFor="afield" className="block text-sm font-medium">
+                Activity Field*
+              </label>
+              <select
+                id="afield"
+                name="afield"
+                value={formData.afield || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select field</option>
+                {ACTIVITY_FIELDS.map(field => (
+                  <option key={field} value={field}>{field.charAt(0).toUpperCase() + field.slice(1)}</option>
+                ))}
+              </select>
+            </div>
+
             {/* Location - State */}
             <div className="space-y-1">
               <label htmlFor="alocstate" className="block text-sm font-medium">
-                State*
+               County*
               </label>
               <select
                 id="alocstate"
@@ -240,7 +312,7 @@ const OrgEditPage = () => {
                 className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 required
               >
-                <option value="">Select state</option>
+                <option value="">Select County</option>
                 {US_STATES.map(state => (
                   <option key={state} value={state}>{state}</option>
                 ))}
@@ -266,7 +338,7 @@ const OrgEditPage = () => {
             {/* Specific Location */}
             <div className="space-y-1">
               <label htmlFor="alocation" className="block text-sm font-medium">
-                Specific Location
+                Address
               </label>
               <input
                 type="text"
@@ -277,29 +349,46 @@ const OrgEditPage = () => {
                 placeholder="Address, building name, or room number"
                 className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 required
-             />
-            </div>
-
-            {/* Activity Date */}
-            <div className="space-y-1">
-              <label htmlFor="adate" className="block text-sm font-medium">
-                Date*
-              </label>
-              <input
-                type="date"
-                id="adate"
-                name="adate"
-                value={formData.adate || ''}
-                onChange={handleChange}
-                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                required
               />
             </div>
+
+{/* Updated Activity Date Section */}
+<div className="space-y-1">
+  <label htmlFor="adate" className="block text-sm font-medium text-gray-300">
+    Application Deadline
+  </label>
+  <div className="flex items-center gap-2">
+    <input
+      type="date"
+      id="adate"
+      name="adate"
+      value={formData.adate || ''}
+      onChange={handleChange}
+      className="w-full px-3 py-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-200"
+    />
+    <button
+      type="button"
+      onClick={() => {
+        setFormData(prev => ({...prev, adate: null}));
+        setShowDateRemoved(true);
+        setTimeout(() => setShowDateRemoved(false), 3000);
+      }}
+      className="px-3 py-2 bg-gray-600 hover:bg-gray-700 rounded-md text-sm whitespace-nowrap text-gray-200 hover:text-white transition-colors duration-200"
+    >
+      Remove Date
+    </button>
+  </div>
+  {showDateRemoved && (
+    <p className="text-green-400 text-xs mt-1 animate-fade-in">
+      Deadline Set to "None"
+    </p>
+  )}
+</div>
 
             {/* Activity Duration */}
             <div className="space-y-1">
               <label htmlFor="aduration" className="block text-sm font-medium">
-                Duration
+                Weekly Times
               </label>
               <input
                 type="text"
@@ -307,10 +396,9 @@ const OrgEditPage = () => {
                 name="aduration"
                 value={formData.aduration || ''}
                 onChange={handleChange}
-                placeholder="e.g., 2 hours"
+                placeholder="e.g., Mon-Fri: 9 AM - 5 PM"
                 className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                required
-             />
+              />
             </div>
 
             {/* Contact Phone */}
@@ -325,7 +413,6 @@ const OrgEditPage = () => {
                 value={formData.aphonenum || ''}
                 onChange={handleChange}
                 className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                required
               />
             </div>
           </div>
@@ -346,7 +433,7 @@ const OrgEditPage = () => {
             />
           </div>
 
-          {/* Requirements (now a textarea like Description) */}
+          {/* Requirements */}
           <div className="space-y-1">
             <label htmlFor="areq" className="block text-sm font-medium">
               Requirements
@@ -359,7 +446,6 @@ const OrgEditPage = () => {
               className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
               rows={4}
               placeholder="e.g., Bring laptop, wear comfortable shoes"
-              required
             />
           </div>
 
