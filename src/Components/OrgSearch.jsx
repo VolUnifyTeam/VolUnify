@@ -312,19 +312,25 @@ const OrgSearch = () => {
           )}
 
           <Modal
-            isOpen={showModal}
-            onRequestClose={closeModal}
-            style={customStyles}
-            contentLabel="Organization Details"
-            ariaHideApp={false}
-          >
-            <div 
-              ref={modalRef}
-              className="bg-gray-800 rounded-lg p-6 w-auto transition-all duration-300"
-            >
-              {selectedOrg && <OrgInfo activity={selectedOrg} onClose={closeModal} />}
-            </div>
-          </Modal>
+        isOpen={showModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Organization Details"
+        ariaHideApp={false}
+      >
+        <div 
+          ref={modalRef}
+          className="bg-gray-800 rounded-lg p-6 w-auto transition-all duration-300"
+        >
+          {selectedOrg && (
+            <>
+              {console.log('Selected Org Data:', selectedOrg)}
+              <OrgInfo org={selectedOrg} onClose={closeModal} />
+            </>
+          )}
+        </div>
+      </Modal>
+
         </div>
       </div>
 
