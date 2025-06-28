@@ -26,10 +26,7 @@ const OrgSearchTile = ({ activity, onClick }) => {
           <p className="text-sm sm:text-base">{activity.afield}</p>
         </div>
 
-        <div className="border rounded-lg p-3 sm:p-4 bg-gray-700">
-          <h3 className="font-semibold text-sm sm:text-base">Activity Requirements:</h3>
-          <p className="text-sm sm:text-base">{activity.areq}</p>
-        </div>
+       
 
       </div>
     </div>

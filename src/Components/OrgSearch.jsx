@@ -6,6 +6,7 @@ import OrgSearchTile from './OrgSearchTile';
 import OrgInfo from './OrgInfo';
 import { UserAuth } from '../context/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
+import starDesign from '../realassets/images/stardesign.png';
 
 Modal.setAppElement('#root');
 
@@ -17,8 +18,8 @@ const OrgSearch = () => {
   const [filteredActivities, setFilteredActivities] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Main loading state
-  const [isFiltering, setIsFiltering] = useState(false); // Filter loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFiltering, setIsFiltering] = useState(false);
   
   // Filter states
   const [selectedState, setSelectedState] = useState('none');
@@ -162,7 +163,29 @@ const OrgSearch = () => {
       )}
 
       <div className="flex-grow pt-16 pb-12 px-4 sm:px-6 lg:px-8">
-        <h1 className="text-center mx-auto max-w-md mb-8 text-blue-400">Browse Volunteer Opportunities!</h1>
+        {/* Updated heading with larger stars and text */}
+        <div className="flex items-center justify-center max-w-md mx-auto mb-8">
+          {/* Left star - increased size */}
+          <div className="hidden lg:block mr-4">
+            <img 
+              src={starDesign} 
+              alt="Decorative star" 
+              className="w-24 opacity-70" 
+            />
+          </div>
+          
+          {/* Larger heading text */}
+          <h1 className="text-center text-blue-400 text-2xl font-bold">Browse Volunteer Opportunities!</h1>
+          
+          {/* Right star - increased size */}
+          <div className="hidden lg:block ml-4">
+            <img 
+              src={starDesign} 
+              alt="Decorative star" 
+              className="w-24 opacity-70" 
+            />
+          </div>
+        </div>
 
         {/* Filter Dropdowns */}
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
