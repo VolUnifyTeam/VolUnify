@@ -126,4 +126,5 @@ OrgInfo.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
+
 export default OrgInfo;
