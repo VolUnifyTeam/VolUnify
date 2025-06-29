@@ -67,7 +67,7 @@ const LandingPage = () => {
                 Browse and sign up for volunteer opportunities in your area.
               </p>
               <Link to="/OrgSearch" className="no-underline">
-                <button className="w-full border border-blue-500 bg-blue-600 hover:bg-blue-700 hover:!border-green-500 text-white text-center py-3 px-4 rounded-lg transition-colors duration-200">
+                <button className="w-full border border-blue-500 !bg-blue-600 hover:bg-blue-700 hover:!border-green-500 text-white text-center py-3 px-4 rounded-lg transition-colors duration-200">
                   Volunteer Now!
                 </button>
               </Link>
@@ -83,7 +83,7 @@ const LandingPage = () => {
                 Create an account to post volunteer opportunities.
               </p>
               <Link to="/signup" className="no-underline">
-                <button className="w-full border border-blue-500 bg-blue-600 hover:bg-blue-700 text-white text-center py-3 px-4 rounded-lg transition-colors duration-200">
+                <button className="w-full border border-blue-500 !bg-blue-600 hover:!bg-blue-700 text-white text-center py-3 px-4 rounded-lg transition-colors duration-200">
                   Sign Up
                 </button>
               </Link>
@@ -96,7 +96,7 @@ const LandingPage = () => {
                 Access your volunteer management dashboard.
               </p>
               <Link to="/signin" className="no-underline">
-                <button className="w-full border border-blue-500 bg-blue-600 hover:bg-blue-700 text-white text-center py-3 px-4 rounded-lg transition-colors duration-200">
+                <button className="w-full border border-blue-500 !bg-blue-600 hover:!bg-blue-700 text-white text-center py-3 px-4 rounded-lg transition-colors duration-200">
                   Sign In
                 </button>
               </Link>
