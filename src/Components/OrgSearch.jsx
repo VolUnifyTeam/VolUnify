@@ -324,7 +324,7 @@ const OrgSearch = () => {
         >
           {selectedOrg && (
             <>
-              {console.log('Selected Org Data:', selectedOrg)}
+              
               <OrgInfo org={selectedOrg} onClose={closeModal} />
             </>
           )}

@@ -62,7 +62,7 @@ const Dashboard = () => {
           <h1 className="text-2xl font-bold text-blue-400">Welcome, {session?.user?.email}</h1>
           
           <button
-            onClick={() => navigate("/OrgSearch")}
+            onClick={() => navigate("/Volunteer Search")}
             className="hover:cursor-pointer border border-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 text-blue-400 transition-colors"
             type="button"
           >
@@ -74,7 +74,7 @@ const Dashboard = () => {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-xl font-bold text-blue-400">My Activities</h1>
             <button
-              onClick={() => navigate("/OrgAddPage")}
+              onClick={() => navigate("/Organization Activity Create")}
               className="hover:cursor-pointer border border-green-500 px-4 py-2 rounded-lg hover:bg-green-600 text-blue-400 transition-colors"
               type="button"
             >
@@ -90,7 +90,7 @@ const Dashboard = () => {
             <div className="text-center py-8">
               <p className="text-gray-400 mb-4">You haven't created any activities yet</p>
               <button
-                onClick={() => navigate("/OrgAddPage")}
+                onClick={() => navigate("/Organization Activity Create")}
                 className="hover:cursor-pointer border border-green-500 px-4 py-2 rounded-lg hover:bg-green-600 text-blue-400 transition-colors"
                 type="button"
               >
@@ -111,7 +111,7 @@ const Dashboard = () => {
         </div>
 
         <button
-          onClick={() => navigate("/OrgSettings")}
+          onClick={() => navigate("/Organization Account Settings")}
           className="hover:cursor-pointer border border-purple-500 px-4 py-2 rounded-lg hover:bg-purple-600 text-blue-400 transition-colors"
           type="button"
         >

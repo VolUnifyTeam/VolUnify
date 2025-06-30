@@ -20,12 +20,12 @@ export const router = createBrowserRouter([
       { index: true, element: <LandingPage /> }, // Default route
       { path: "signup", element: <Signup /> },
       { path: "signin", element: <Signin /> },
-      { path: "orgSearch", element: <OrgSearch /> },
-      { path: "orgInfo", element: <OrgInfo /> },
+      { path: "Volunteer Search", element: <OrgSearch /> },
+      { path: "Organization Information", element: <OrgInfo /> },
       
       // Protected routes
       { 
-        path: "edit-activity/:activityId", 
+        path: "Edit Activity/:activityId", 
         element: (
           <PrivateRoute>
             <OrgEditPage />
@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
         ) 
       },
       { 
-        path: "orgcreate", 
+        path: "Create Opportunity", 
         element: (
           <PrivateRoute>
             <OrgCreate />
@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
         )
       },
       {
-        path: "orgsettings",
+        path: "Organization Account Settings",
         element: (
           <PrivateRoute>
             <OrgSettings />
@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
         )
       },
       { 
-        path: "orgaddpage", 
+        path: "Organization Activity Create", 
         element: (
           <PrivateRoute>
             <OrgAddPage />

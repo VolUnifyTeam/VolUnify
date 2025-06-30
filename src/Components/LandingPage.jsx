@@ -66,7 +66,7 @@ const LandingPage = () => {
               <p className="text-gray-300 mb-6">
                 Browse and sign up for volunteer opportunities in your area.
               </p>
-              <Link to="/OrgSearch" className="no-underline">
+              <Link to="/Volunteer Search" className="no-underline">
                 <button className="w-full border border-blue-500 !bg-blue-600 hover:bg-blue-700 hover:!border-green-500 text-white text-center py-3 px-4 rounded-lg transition-colors duration-200">
                   Volunteer Now!
                 </button>

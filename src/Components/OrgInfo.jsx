@@ -31,7 +31,7 @@ const OrgInfo = ({ org, onClose }) => {
   ];
 
   return (
-    <div className="space-y-4 w-full transition-all duration-300 max-h-[80vh] overflow-y-auto pr-2">
+    <div className="space-y-4 w-full transition-all duration-300 max-h-[80vh] overflow-y-auto pr-2 relative">
       {/* Custom scrollbar styling */}
       <style jsx>{`
         div::-webkit-scrollbar {
@@ -104,6 +104,20 @@ const OrgInfo = ({ org, onClose }) => {
           )}
         </div>
       ))}
+
+ {/* Volunteer Now! button */}
+{org.alink && (
+  <div className="sticky bottom-0 right-0 p-4 flex justify-end">
+    <a 
+      href={org.alink} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="bg-gray-900 hover:bg-gray-100 text-emerald-500 hover:text-emerald-400 text-base font-medium focus:outline-none px-5 py-2.5 rounded-lg transition-colors duration-200"
+    >
+      Volunteer Now!
+    </a>
+  </div>
+)}
     </div>
   );
 };
@@ -122,9 +136,9 @@ OrgInfo.propTypes = {
     areq: PropTypes.string,
     alocation: PropTypes.string,
     atype: PropTypes.string,
+    alink: PropTypes.string,
   }),
   onClose: PropTypes.func.isRequired,
 };
-
 
 export default OrgInfo;

@@ -37,7 +37,7 @@ const OrgCreateTile = ({ activity, currentUserId }) => {
       {/* Action buttons */}
       <div className="flex space-x-2 mt-auto">
         <button
-          onClick={() => navigate(`/edit-activity/${activity.aid}`)}
+          onClick={() => navigate(`/Edit Activity/${activity.aid}`)}
           className="text-blue-400 hover:cursor-pointer border px-4 py-2 rounded hover:bg-gray-100"
         >
           Edit
